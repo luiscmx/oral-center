@@ -1,0 +1,5 @@
+/target/
+/logs/
+/exportaciones/
+/conexion.properties
+/*.local.sql

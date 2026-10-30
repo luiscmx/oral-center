@@ -1,0 +1,4 @@
+# Copia este archivo como conexion.properties y completa la clave local.
+url=jdbc:mysql://127.0.0.1:3306/oral_center?sslMode=REQUIRED&connectTimeout=3000&socketTimeout=5000
+usuario=oral_center_apf3
+clave=COMPLETAR_LOCALMENTE

@@ -1,0 +1,20 @@
+<configuration>
+    <appender name="ARCHIVO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/oral-center.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/oral-center.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>1MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>10MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n%nopex</pattern>
+        </encoder>
+    </appender>
+    <!-- Solo mensajes técnicos de la aplicación; las librerías no escriben sus datos. -->
+    <logger name="pe.oralcenter" level="INFO" additivity="false">
+        <appender-ref ref="ARCHIVO"/>
+    </logger>
+    <root level="OFF"/>
+</configuration>
