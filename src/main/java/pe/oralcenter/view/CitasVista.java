@@ -51,10 +51,11 @@ public class CitasVista extends JPanel {
 
     public CitasVista() {
         super(new BorderLayout());
-        JPanel principal = Interfaz.principal("Nueva cita", mensaje, volver);
+        JPanel principal = Interfaz.principal("Registrar nueva cita", mensaje, volver);
         JPanel encabezado = Interfaz.panel(new BorderLayout(20, 0));
-        encabezado.add(Interfaz.titulo("Nueva cita"), BorderLayout.WEST);
+        encabezado.add(Interfaz.titulo("Registrar nueva cita"), BorderLayout.WEST);
         encabezado.add(actualizar, BorderLayout.EAST);
+        Interfaz.boton(actualizar);
         principal.add(encabezado, BorderLayout.NORTH);
         JPanel centro = Interfaz.panel(new BorderLayout(20, 0));
         JPanel selectorFecha = Interfaz.panel(new BorderLayout(6, 0));
@@ -65,7 +66,7 @@ public class CitasVista extends JPanel {
         selectorFecha.add(fecha, BorderLayout.CENTER);
         selectorFecha.add(elegirFecha, BorderLayout.EAST);
 
-        JPanel campos = Interfaz.panel(new GridLayout(3, 1, 0, 16));
+        JPanel campos = Interfaz.panel(new GridLayout(3, 1, 0, 12));
         campos.add(Interfaz.fila(Interfaz.campo("Paciente (DNI o nombre)", paciente), Interfaz.campo("Odontólogo", odontologo)));
         campos.add(Interfaz.fila(Interfaz.campo("Fecha (día/mes/año)", selectorFecha), Interfaz.campo("Tipo de atención", tipo)));
         campos.add(Interfaz.fila(Interfaz.campo("Hora de inicio (24 horas)", hora), Interfaz.campo("Duración (minutos)", duracion)));
@@ -74,25 +75,24 @@ public class CitasVista extends JPanel {
         motivo.setLineWrap(true);
         motivo.setWrapStyleWord(true);
         JScrollPane textoMotivo = new JScrollPane(motivo);
-        textoMotivo.setPreferredSize(new Dimension(200, 90));
+        textoMotivo.setPreferredSize(new Dimension(200, 64));
         detalle.add(Interfaz.campo("Motivo de consulta", textoMotivo), BorderLayout.CENTER);
         JPanel datosCita = Interfaz.panel(new BorderLayout(0, 18));
         datosCita.add(campos, BorderLayout.NORTH);
         datosCita.add(detalle, BorderLayout.CENTER);
-        JPanel formulario = Interfaz.panel(new BorderLayout(0, 18));
+        JPanel formulario = Interfaz.tarjeta(new BorderLayout(0, 18));
         formulario.add(datosCita, BorderLayout.NORTH);
         formulario.add(Interfaz.botones(guardar, limpiar), BorderLayout.SOUTH);
-        JPanel izquierda = Interfaz.panel(new BorderLayout());
-        izquierda.add(formulario, BorderLayout.NORTH);
-        centro.add(izquierda, BorderLayout.CENTER);
+        centro.add(formulario, BorderLayout.CENTER);
 
-        JPanel disponibilidad = Interfaz.panel(new BorderLayout(0, 12));
-        disponibilidad.setPreferredSize(new Dimension(280, 360));
+        JPanel disponibilidad = Interfaz.tarjeta(new BorderLayout(0, 12));
+        disponibilidad.setPreferredSize(new Dimension(260, 360));
         JLabel tituloDisponibilidad = new JLabel("Disponibilidad");
         tituloDisponibilidad.setFont(new Font("Segoe UI", Font.BOLD, 16));
         JPanel consulta = Interfaz.panel(new BorderLayout(0, 12));
         consulta.add(tituloDisponibilidad, BorderLayout.NORTH);
-        consulta.add(consultar, BorderLayout.CENTER);
+        consulta.add(Interfaz.botones(consultar), BorderLayout.CENTER);
+        Interfaz.boton(usar);
         disponibilidad.add(consulta, BorderLayout.NORTH);
         Interfaz.tabla(tabla, "Intervalos disponibles");
         disponibilidad.add(new JScrollPane(tabla), BorderLayout.CENTER);
@@ -103,6 +103,7 @@ public class CitasVista extends JPanel {
         Interfaz.fuente(motivo, fin, actualizar, consultar, usar, fecha, elegirFecha);
         guardar.setBackground(AZUL);
         guardar.setForeground(Color.WHITE);
+        Interfaz.primario(guardar);
         add(principal, BorderLayout.CENTER);
 
 
@@ -282,7 +283,7 @@ public class CitasVista extends JPanel {
                 try {
                     List<Intervalo> libres = get();
                     mostrarDisponibilidad(libres);
-                    String texto = "Selecciona un intervalo y pulsa Usar intervalo seleccionado, o escribe otra hora dentro de él. Se comprobará de nuevo al guardar.";
+                    String texto = "Selecciona un intervalo y pulsa Usar horario seleccionado, o escribe otra hora dentro de él. Se comprobará de nuevo al guardar.";
                     if (libres.isEmpty()) {
                         texto = "No hay intervalos con tiempo suficiente. Prueba otra fecha o revisa los turnos con administración.";
                     }

@@ -16,8 +16,10 @@ public class PacientesVista extends JPanel {
     private boolean permiteGestion = true;
     final JPanel formulario;
     final JPanel accionesGestion;
-    private final CardLayout secciones = new CardLayout();
-    private final JPanel contenido = new JPanel(secciones);
+    final JTabbedPane contenido = new JTabbedPane();
+    private final JLabel nombrePaciente = new JLabel("Pacientes registrados");
+    private final JLabel documentoPaciente = new JLabel(" ");
+    private final JLabel avatar = new JLabel("OC", SwingConstants.CENTER);
     final JButton nuevo = new JButton("Nuevo paciente");
 
     final JTextField dni = new JTextField();
@@ -42,8 +44,8 @@ public class PacientesVista extends JPanel {
 
     public PacientesVista() {
         super(new BorderLayout());
-        JPanel principal = Interfaz.principal("Pacientes", mensaje, volver);
-        JPanel listado = Interfaz.panel(new BorderLayout(0, 16));
+        JPanel principal = Interfaz.principal("Gestión de pacientes", mensaje, volver);
+        JPanel listado = Interfaz.tarjeta(new BorderLayout(0, 16));
         JPanel encabezado = Interfaz.panel(new BorderLayout(12, 0));
         encabezado.add(Interfaz.campo("Buscar por DNI o nombre", busqueda), BorderLayout.CENTER);
         JPanel accionesBusqueda = Interfaz.panel(new BorderLayout());
@@ -58,22 +60,55 @@ public class PacientesVista extends JPanel {
         listado.add(accionesGestion, BorderLayout.SOUTH);
 
         JPanel campos = Interfaz.panel(new GridLayout(2, 1, 0, 16));
-        campos.add(Interfaz.fila(Interfaz.campo("DNI", dni), Interfaz.campo("Teléfono", telefono)));
-        campos.add(Interfaz.fila(Interfaz.campo("Nombres", nombres), Interfaz.campo("Apellidos", apellidos)));
-        JPanel ficha = Interfaz.panel(new BorderLayout(0, 20));
+        campos.add(Interfaz.fila(Interfaz.campo("DNI", dni), Interfaz.campo("Nombres", nombres)));
+        campos.add(Interfaz.fila(Interfaz.campo("Apellidos", apellidos), Interfaz.campo("Teléfono", telefono)));
+        JPanel ficha = Interfaz.tarjeta(new BorderLayout(0, 20));
         tituloFormulario.setFont(new Font("Segoe UI", Font.BOLD, 18));
         ficha.add(tituloFormulario, BorderLayout.NORTH);
         ficha.add(campos, BorderLayout.CENTER);
         ficha.add(Interfaz.botones(guardar, limpiar), BorderLayout.SOUTH);
         formulario = Interfaz.panel(new BorderLayout());
+        formulario.setOpaque(true);
+        formulario.setBackground(Color.WHITE);
         formulario.add(ficha, BorderLayout.NORTH);
         limpiar.setText("Cancelar");
-        contenido.setOpaque(false);
-        contenido.add(listado, "listado");
-        contenido.add(formulario, "formulario");
-        principal.add(contenido, BorderLayout.CENTER);
+        contenido.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        contenido.setBackground(Color.WHITE);
+        contenido.addTab("Pacientes registrados", listado);
+        contenido.addTab("Datos personales", formulario);
+        JPanel fichaPaciente = Interfaz.tarjeta(new BorderLayout(14, 0));
+        avatar.setOpaque(true);
+        avatar.setBackground(new Color(0xE7F3FF));
+        avatar.setForeground(Interfaz.AZUL);
+        avatar.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        avatar.setPreferredSize(new Dimension(48, 48));
+        fichaPaciente.add(avatar, BorderLayout.WEST);
+        nombrePaciente.setFont(new Font("Segoe UI", Font.BOLD, 17));
+        nombrePaciente.setForeground(Interfaz.AZUL);
+        nombrePaciente.putClientProperty("html.disable", true);
+        documentoPaciente.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        documentoPaciente.setForeground(new Color(0x52677F));
+        JPanel identidad = Interfaz.panel(new GridLayout(2, 1, 0, 5));
+        identidad.add(nombrePaciente);
+        identidad.add(documentoPaciente);
+        fichaPaciente.add(identidad, BorderLayout.CENTER);
+        JPanel centro = Interfaz.panel(new BorderLayout(0, 18));
+        centro.add(fichaPaciente, BorderLayout.NORTH);
+        centro.add(contenido, BorderLayout.CENTER);
+        principal.add(centro, BorderLayout.CENTER);
+        Interfaz.primario(nuevo);
+        Interfaz.primario(guardar);
+        tabla.getSelectionModel().addListSelectionListener(e -> {
+            Paciente seleccionado = getPacienteSeleccionado();
+            if (!e.getValueIsAdjusting() && seleccionado != null && idEdicion == 0) { mostrarIdentidad(seleccionado); }
+        });
         nuevo.addActionListener(e -> {
-            secciones.show(contenido, "formulario");
+            contenido.setSelectedIndex(1);
+            if (idEdicion == 0) {
+                nombrePaciente.setText("Nuevo paciente");
+                documentoPaciente.setText(" ");
+                avatar.setText("NP");
+            }
             dni.requestFocusInWindow();
         });
         eliminar.setForeground(new Color(0xA12622));
@@ -96,8 +131,11 @@ public class PacientesVista extends JPanel {
         tituloFormulario.setText("Registrar paciente");
         guardar.setText("Guardar paciente");
         limpiar.setText("Cancelar");
-        secciones.show(contenido, "listado");
+        contenido.setSelectedIndex(0);
         tabla.clearSelection();
+        nombrePaciente.setText("Pacientes registrados");
+        documentoPaciente.setText(" ");
+        avatar.setText("OC");
         busqueda.requestFocusInWindow();
     }
 
@@ -126,12 +164,22 @@ public class PacientesVista extends JPanel {
         return opcion == 0;
     }
 
+    private void mostrarIdentidad(Paciente paciente) {
+        nombrePaciente.setText(paciente.getNombres() + " " + paciente.getApellidos());
+        documentoPaciente.setText("DNI " + paciente.getDni() + "   ·   Código " + paciente.getId());
+        String iniciales = "";
+        if (!paciente.getNombres().isBlank()) { iniciales += paciente.getNombres().substring(0, 1); }
+        if (!paciente.getApellidos().isBlank()) { iniciales += paciente.getApellidos().substring(0, 1); }
+        avatar.setText(iniciales.toUpperCase(java.util.Locale.ROOT));
+    }
+
     public void mostrarEdicion(Paciente paciente) {
+        mostrarIdentidad(paciente);
         dni.setText(paciente.getDni());
         nombres.setText(paciente.getNombres());
         apellidos.setText(paciente.getApellidos());
         telefono.setText(paciente.getTelefono());
-        secciones.show(contenido, "formulario");
+        contenido.setSelectedIndex(1);
         tituloFormulario.setText("Editar paciente");
         guardar.setText("Guardar cambios");
         limpiar.setText("Cancelar edición");
@@ -156,7 +204,11 @@ public class PacientesVista extends JPanel {
         formulario.setVisible(false);
         accionesGestion.setVisible(permiteGestion);
         nuevo.setVisible(permiteGestion);
-        secciones.show(contenido, "listado");
+        if (!permiteGestion) {
+            contenido.remove(formulario);
+            formulario.setVisible(false);
+        }
+        contenido.setSelectedIndex(0);
 
         guardar.addActionListener(e -> guardar());
         buscar.addActionListener(e -> cargar(""));

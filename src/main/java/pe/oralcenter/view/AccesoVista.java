@@ -18,7 +18,7 @@ public class AccesoVista extends JFrame {
     private CitasControlador controladorCitas;
 
     private static final Color AZUL = new Color(0x254E88);
-    private static final Color FONDO = new Color(0xF5F7FA);
+    private static final Color FONDO = Interfaz.FONDO;
     final JTextField usuario = new JTextField();
     final JPasswordField clave = new JPasswordField();
     final JButton ingresar = new JButton("Iniciar sesión");
@@ -39,11 +39,12 @@ public class AccesoVista extends JFrame {
     OdontologosVista vistaOdontologos;
     CitasVista vistaCitas;
     AgendaVista vistaAgenda;
+    InicioVista vistaInicio;
 
     public AccesoVista() {
         super("Oral Center · Acceso");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setMinimumSize(new Dimension(1000, 650));
+        setMinimumSize(new Dimension(1000, 700));
         setPreferredSize(new Dimension(1120, 720));
         contenido.add(crearAcceso(), "acceso");
         contenido.add(crearSistema(), "usuario");
@@ -66,7 +67,7 @@ public class AccesoVista extends JFrame {
         JPanel acceso = panel(new BorderLayout());
         acceso.add(crearMarca(), BorderLayout.WEST);
         JPanel formulario = crearFormulario();
-        formulario.setPreferredSize(new Dimension(400, 350));
+        formulario.setPreferredSize(new Dimension(420, 350));
         JPanel centro = panel(new GridBagLayout());
         centro.add(formulario);
         JPanel derecha = panel(new BorderLayout());
@@ -78,32 +79,50 @@ public class AccesoVista extends JFrame {
 
     private JPanel crearSistema() {
         JPanel sistema = panel(new BorderLayout());
-        JPanel lateral = new JPanel(new BorderLayout(0, 24));
+        JPanel lateral = new JPanel(new BorderLayout(0, 18));
         lateral.setBackground(Color.WHITE);
         lateral.setPreferredSize(new Dimension(190, 0));
-        lateral.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(0, 0, 0, 1, new Color(0xD8DEE8)),
-                new EmptyBorder(24, 12, 24, 12)));
-        JLabel nombre = texto("Oral Center", 20);
+        lateral.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, new Color(0xDCE7F3)));
+        JLabel nombre = texto("Oral Center", 21);
         nombre.setFont(nombre.getFont().deriveFont(Font.BOLD));
-        nombre.setForeground(AZUL);
-        nombre.setBorder(new EmptyBorder(0, 8, 8, 0));
+        nombre.setForeground(Color.WHITE);
+        nombre.setOpaque(true);
+        nombre.setBackground(AZUL);
+        nombre.setBorder(new EmptyBorder(26, 18, 26, 18));
         lateral.add(nombre, BorderLayout.NORTH);
         acciones.setOpaque(false);
         JPanel menu = Interfaz.panel(new BorderLayout());
+        menu.setBorder(new EmptyBorder(0, 12, 0, 12));
         menu.add(acciones, BorderLayout.NORTH);
         lateral.add(menu, BorderLayout.CENTER);
-        lateral.add(salir, BorderLayout.SOUTH);
+        JPanel pieMenu = Interfaz.panel(new BorderLayout());
+        pieMenu.setBorder(new EmptyBorder(12, 18, 24, 18));
+        salir.setBorder(new EmptyBorder(8, 0, 8, 0));
+        salir.setHorizontalAlignment(SwingConstants.LEFT);
+        pieMenu.add(salir);
+        lateral.add(pieMenu, BorderLayout.SOUTH);
         sistema.add(lateral, BorderLayout.WEST);
+
+        JPanel cabecera = new JPanel(new BorderLayout());
+        cabecera.setBackground(Color.WHITE);
+        cabecera.setPreferredSize(new Dimension(0, 52));
+        cabecera.setBorder(new EmptyBorder(12, 24, 12, 24));
+        saludo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        saludo.setForeground(new Color(0x52677F));
+        saludo.putClientProperty("html.disable", true);
+        cabecera.add(saludo, BorderLayout.EAST);
+        JPanel cuerpo = panel(new BorderLayout());
+        cuerpo.add(cabecera, BorderLayout.NORTH);
         paginas.add(crearBienvenida(), "inicio");
-        sistema.add(paginas, BorderLayout.CENTER);
+        cuerpo.add(paginas, BorderLayout.CENTER);
+        sistema.add(cuerpo, BorderLayout.CENTER);
         return sistema;
     }
 
     private JPanel crearMarca() {
         JPanel marca = new JPanel(new GridBagLayout());
         marca.setBackground(AZUL);
-        marca.setPreferredSize(new Dimension(300, 0));
+        marca.setPreferredSize(new Dimension(380, 0));
         JLabel nombre = texto("<html><h1>Oral Center</h1></html>", 16);
         nombre.setForeground(Color.WHITE);
         marca.add(nombre);
@@ -111,16 +130,13 @@ public class AccesoVista extends JFrame {
     }
 
     private JPanel crearFormulario() {
-        JPanel formulario = panel(new BorderLayout(0, 20));
-        JPanel encabezado = panel(new GridLayout(2, 1, 0, 8));
-        encabezado.add(Interfaz.titulo("Iniciar sesión"));
-        encabezado.add(texto("Accede con tu usuario y contraseña.", 16));
-        formulario.add(encabezado, BorderLayout.NORTH);
-        JPanel campos = panel(new GridLayout(2, 1, 0, 16));
+        JPanel formulario = Interfaz.tarjeta(new BorderLayout(0, 20));
+        formulario.add(Interfaz.titulo("Iniciar sesión"), BorderLayout.NORTH);
+        JPanel campos = Interfaz.panel(new GridLayout(2, 1, 0, 16));
         campos.add(Interfaz.campo("Usuario", usuario));
         campos.add(Interfaz.campo("Contraseña", clave));
         formulario.add(campos, BorderLayout.CENTER);
-        JPanel acciones = panel(new BorderLayout(0, 12));
+        JPanel acciones = Interfaz.panel(new BorderLayout(0, 12));
         acciones.add(ingresar, BorderLayout.NORTH);
         mensaje.setPreferredSize(new Dimension(400, 54));
         acciones.add(mensaje, BorderLayout.CENTER);
@@ -129,28 +145,13 @@ public class AccesoVista extends JFrame {
     }
 
     private JPanel crearBienvenida() {
-        JPanel bienvenida = panel(new BorderLayout(0, 24));
-        bienvenida.setBorder(new EmptyBorder(24, 24, 24, 24));
-        bienvenida.add(Interfaz.titulo("Inicio"), BorderLayout.NORTH);
-        saludo.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        JPanel centro = Interfaz.panel(new BorderLayout(0, 20));
-        centro.add(saludo, BorderLayout.NORTH);
-        JPanel accesos = Interfaz.panel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        JButton nuevaCita = new JButton("Nueva cita");
-        JButton verAgenda = new JButton("Ver agenda");
-        JButton verPacientes = new JButton("Pacientes");
-        accesos.add(Interfaz.botones(nuevaCita, verAgenda, verPacientes));
-        centro.add(accesos, BorderLayout.CENTER);
-        JPanel cuerpo = Interfaz.panel(new BorderLayout());
-        cuerpo.add(centro, BorderLayout.NORTH);
-        bienvenida.add(cuerpo, BorderLayout.CENTER);
-        nuevaCita.addActionListener(e -> citas.doClick());
-        verAgenda.addActionListener(e -> agenda.doClick());
-        verPacientes.addActionListener(e -> pacientes.doClick());
-        return bienvenida;
+        vistaInicio = new InicioVista();
+        vistaInicio.nuevaCita.addActionListener(e -> citas.doClick());
+        vistaInicio.verAgenda.addActionListener(e -> agenda.doClick());
+        vistaInicio.verPacientes.addActionListener(e -> pacientes.doClick());
+        vistaInicio.actualizar.addActionListener(e -> vistaInicio.cargar(controlador, controladorPacientes, controladorCitas));
+        return vistaInicio;
     }
-
-
 
     public void trabajando(boolean ocupado) {
         usuario.setEnabled(!ocupado);
@@ -165,7 +166,7 @@ public class AccesoVista extends JFrame {
     }
 
     public void mostrarUsuario(Usuario actual) {
-        saludo.setText("Hola, " + actual.getNombreUsuario());
+        saludo.setText(actual.getNombreUsuario());
         boolean general = actual.getPerfiles().contains(Perfil.RECEPCIONISTA) || actual.getPerfiles().contains(Perfil.ADMINISTRADOR);
         pacientes.setVisible(general || actual.getPerfiles().contains(Perfil.ODONTOLOGO));
         pacientes.setText(general ? "Pacientes" : "Mis pacientes");
@@ -183,6 +184,8 @@ public class AccesoVista extends JFrame {
     }
 
     public void mostrarAcceso() {
+        vistaInicio.cancelarCarga();
+        saludo.setText("");
         clave.setText("");
         mensaje.setText(" ");
         paginas.removeAll();
@@ -205,10 +208,11 @@ public class AccesoVista extends JFrame {
 
     private void mostrarSeccion(String nombre, JButton elegido) {
         navegacion.show(paginas, nombre);
+        if (nombre.equals("inicio")) { vistaInicio.cargar(controlador, controladorPacientes, controladorCitas); }
         for (JButton boton : new JButton[]{inicio, pacientes, odontologos, citas, agenda}) {
             boton.setBackground(boton == elegido ? new Color(0xE7EFFA) : Color.WHITE);
             boton.setForeground(boton == elegido ? AZUL : new Color(0x333333));
-            boton.setBorder(new EmptyBorder(9, 12, 9, 12));
+            boton.setBorder(new EmptyBorder(9, 13, 9, 10));
             boton.setHorizontalAlignment(SwingConstants.LEFT);
         }
         setTitle("Oral Center · " + elegido.getText());

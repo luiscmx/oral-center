@@ -38,7 +38,7 @@ public class OdontologosVista extends JPanel {
     public OdontologosVista() {
         setLayout(secciones);
         JPanel principal = Interfaz.principal("Odontólogos", mensaje, volver);
-        JPanel listado = Interfaz.panel(new BorderLayout(0, 16));
+        JPanel listado = Interfaz.tarjeta(new BorderLayout(0, 16));
         listado.add(Interfaz.botones(nuevo, actualizar), BorderLayout.NORTH);
         Interfaz.tabla(tabla, "Odontólogos registrados", 70, 110, 300, 260);
         listado.add(new JScrollPane(tabla), BorderLayout.CENTER);
@@ -49,7 +49,7 @@ public class OdontologosVista extends JPanel {
         JPanel campos = Interfaz.panel(new GridLayout(2, 1, 0, 16));
         campos.add(Interfaz.fila(Interfaz.campo("DNI", dni), Interfaz.campo("Nombre completo", nombre)));
         campos.add(Interfaz.campo("Especialidad", especialidad));
-        JPanel ficha = Interfaz.panel(new BorderLayout(0, 20));
+        JPanel ficha = Interfaz.tarjeta(new BorderLayout(0, 20));
         tituloFormulario.setFont(new Font("Segoe UI", Font.BOLD, 18));
         ficha.add(tituloFormulario, BorderLayout.NORTH);
         ficha.add(campos, BorderLayout.CENTER);
@@ -65,6 +65,8 @@ public class OdontologosVista extends JPanel {
             datosVisibles.show(contenido, "formulario");
             dni.requestFocusInWindow();
         });
+        Interfaz.primario(nuevo);
+        Interfaz.primario(guardar);
         add(principal, "odontologos");
     }
 

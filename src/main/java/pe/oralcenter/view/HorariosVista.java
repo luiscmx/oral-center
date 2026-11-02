@@ -17,7 +17,7 @@ public class HorariosVista extends JPanel {
     private List<Horario> horarios = List.of();
 
     private static final Color AZUL = new Color(0x254E88);
-    private static final Color FONDO = new Color(0xF5F7FA);
+    private static final Color FONDO = Interfaz.FONDO;
     private static final String[] DIAS = {"Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"};
     private final long idOdontologo;
     final JComboBox<String> dia = new JComboBox<>(DIAS);
@@ -53,7 +53,7 @@ public class HorariosVista extends JPanel {
         datosHora.add(campos, BorderLayout.CENTER);
         datosHora.add(new JLabel("Formato de 24 horas: 09:00"), BorderLayout.SOUTH);
         centro.add(Interfaz.formulario(tituloFormulario, datosHora, 360, guardar, limpiar), BorderLayout.WEST);
-        JPanel listado = Interfaz.panel(new BorderLayout(0, 12));
+        JPanel listado = Interfaz.tarjeta(new BorderLayout(0, 12));
         listado.add(actualizar, BorderLayout.NORTH);
         Interfaz.tabla(tabla, "Horarios semanales", 75, 160, 75, 75);
         listado.add(new JScrollPane(tabla), BorderLayout.CENTER);

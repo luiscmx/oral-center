@@ -38,17 +38,21 @@ public class AgendaVista extends JPanel {
 
     public AgendaVista() {
         super(new BorderLayout());
-        JPanel principal = Interfaz.principal("Agenda", mensaje, exportar, volver);
+        JPanel principal = Interfaz.principal("Agenda de citas", mensaje, exportar, volver);
         exportar.setEnabled(false);
         JPanel filtros = Interfaz.fila(Interfaz.campo("Fecha (día/mes/año)", fecha),
                 Interfaz.campo("Odontólogo", profesional), Interfaz.campo("Estado", estado));
-        JPanel busqueda = Interfaz.panel(new BorderLayout(0, 12));
+        JPanel busqueda = Interfaz.tarjeta(new BorderLayout(0, 12));
         busqueda.add(filtros, BorderLayout.NORTH);
         busqueda.add(Interfaz.botones(consultar, restablecer), BorderLayout.SOUTH);
         JPanel centro = Interfaz.panel(new BorderLayout(0, 16));
         centro.add(busqueda, BorderLayout.NORTH);
         Interfaz.tabla(tabla, "Citas de la agenda", 60, 65, 65, 210, 190, 140, 110);
-        centro.add(new JScrollPane(tabla), BorderLayout.CENTER);
+        JPanel listado = Interfaz.tarjeta(new BorderLayout());
+        JScrollPane desplazamiento = new JScrollPane(tabla);
+        desplazamiento.setBorder(BorderFactory.createEmptyBorder());
+        listado.add(desplazamiento, BorderLayout.CENTER);
+        centro.add(listado, BorderLayout.CENTER);
         detalle.setEditable(false);
         detalle.setLineWrap(true);
         detalle.setWrapStyleWord(true);
@@ -59,6 +63,7 @@ public class AgendaVista extends JPanel {
 
 
         principal.add(centro, BorderLayout.CENTER);
+        Interfaz.primario(consultar);
         add(principal, BorderLayout.CENTER);
     }
 
